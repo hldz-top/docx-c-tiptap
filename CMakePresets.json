@@ -15,7 +15,7 @@
       "name": "windows-vcpkg-x64",
       "inherits": "base",
       "displayName": "Windows x64 + vcpkg (libxml2)",
-      "description": "需要环境变量 VCPKG_ROOT。仅安装 Build Tools 时，请用 scripts/configure-windows.ps1（会为本次配置传入 CMAKE_GENERATOR_INSTANCE）。",
+      "description": "需要环境变量 VCPKG_ROOT。若曾无 vcpkg.json 时配置过，须删除 build 再配（否则 VCPKG_MANIFEST_MODE 被旧缓存锁死）。Build Tools 仅用脚本：scripts/configure-windows.ps1。",
       "generator": "Visual Studio 18 2026",
       "architecture": {
         "value": "x64",

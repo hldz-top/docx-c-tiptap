@@ -99,30 +99,6 @@ export const DocWithMeta = Document.extend({
           return { 'data-footer-json': encodeAttr(JSON.stringify(v)) }
         },
       },
-      headerHtml: {
-        default: null as string | null,
-        parseHTML: (element) => {
-          const raw = element.getAttribute('data-header-html')
-          return raw ? decodeAttr(raw) : null
-        },
-        renderHTML: (attributes) => {
-          const v = attributes.headerHtml as string | null | undefined
-          if (v == null || v === '') return {}
-          return { 'data-header-html': encodeAttr(v) }
-        },
-      },
-      footerHtml: {
-        default: null as string | null,
-        parseHTML: (element) => {
-          const raw = element.getAttribute('data-footer-html')
-          return raw ? decodeAttr(raw) : null
-        },
-        renderHTML: (attributes) => {
-          const v = attributes.footerHtml as string | null | undefined
-          if (v == null || v === '') return {}
-          return { 'data-footer-html': encodeAttr(v) }
-        },
-      },
     }
   },
 })

@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 project(docx2tiptap C)
 
+# 若在添加 vcpkg.json 之前已生成过缓存，VCPKG_MANIFEST_MODE 会保持 OFF，依赖不会安装；vcpkg 也不允许在同一 build 目录上事后打开 manifest。
+if(CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg\\.cmake$"
+    AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/vcpkg.json"
+    AND NOT VCPKG_MANIFEST_MODE)
+    message(FATAL_ERROR
+        "vcpkg.json 已存在，但本构建目录中 VCPKG_MANIFEST_MODE=OFF（多为旧 CMake 缓存）。"
+        " libxml2 不会从清单安装，find_package(LibXml2) 会失败。\n"
+        "请删除整个 build 目录后重新配置；不要沿用添加 vcpkg.json 之前的构建树。")
+endif()
+
 set(CMAKE_C_STANDARD 11)
 
 find_package(LibXml2 CONFIG QUIET)

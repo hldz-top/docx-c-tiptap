@@ -1,3 +1,4 @@
+import type { AnyExtension } from '@tiptap/core'
 import Highlight from '@tiptap/extension-highlight'
 import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
@@ -62,9 +63,43 @@ export const FONT_SIZE_OPTIONS: { label: string; value: string }[] = [
 
 export { fontFamilyList }
 
-export function buildExtensions() {
+const starterLink = {
+  openOnClick: true,
+  autolink: true,
+  defaultProtocol: 'https' as const,
+}
+
+export type EditorExtensionMode = 'main' | 'fragment'
+
+export function buildEditorExtensions(options: {
+  mode: EditorExtensionMode
+  placeholder?: string
+}): AnyExtension[] {
+  const { mode, placeholder } = options
+  const defaultPlaceholder =
+    mode === 'main'
+      ? '在此编辑，或使用「导入 JSON」加载 docx2tiptap 输出…'
+      : '…'
+  const ph = placeholder ?? defaultPlaceholder
+
+  const starterConfig =
+    mode === 'main'
+      ? {
+          document: false as const,
+          paragraph: false as const,
+          heading: false as const,
+          codeBlock: false as const,
+          link: starterLink,
+        }
+      : {
+          paragraph: false as const,
+          heading: false as const,
+          codeBlock: false as const,
+          link: starterLink,
+        }
+
   return [
-    DocWithMeta,
+    ...(mode === 'main' ? [DocWithMeta] : []),
     TextStyleKit.configure({
       textStyle: { mergeNestedSpanStyles: true },
       color: { types: ['textStyle'] },
@@ -82,17 +117,7 @@ export function buildExtensions() {
     }),
     CustomParagraph,
     CustomHeading,
-    StarterKit.configure({
-      document: false,
-      paragraph: false,
-      heading: false,
-      codeBlock: false,
-      link: {
-        openOnClick: true,
-        autolink: true,
-        defaultProtocol: 'https',
-      },
-    }),
+    StarterKit.configure(starterConfig),
     TextAlign.configure({
       types: ['heading', 'paragraph'],
     }),
@@ -135,7 +160,11 @@ export function buildExtensions() {
     Footnote,
     Endnote,
     Placeholder.configure({
-      placeholder: '在此编辑，或使用「导入 JSON」加载 docx2tiptap 输出…',
+      placeholder: ph,
     }),
   ]
+}
+
+export function buildExtensions() {
+  return buildEditorExtensions({ mode: 'main' })
 }

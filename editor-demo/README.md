@@ -32,13 +32,13 @@ npm run dev
 ## Schema 说明
 
 - 自定义节点与 C 侧对齐：`abstractBlock`、`keywordsBlock`、`referenceItem`、`figure`、`footnote`、`endnote`；`Document` 上保留 `pageSetup`、`warnings`。
-- **`doc` 扩展属性**：`headerHtml`、`footerHtml`（字符串或 `null`），用于编辑区外的页眉/页脚壳层；展示前经 DOMPurify 过滤，支持占位符 `{page}`、`{total}`（当前无分页时固定为 `1`）。若日后 `docx2tiptap` 解析 OOXML 页眉页脚，可写入同名字段供前端直接渲染。
+- **`doc` 扩展属性**：`header`、`footer` 为 **Tiptap 块节点 JSON 数组**（或 `null`），与 `docx2tiptap` 在开启 `include_header_footer` 时的输出一致。页眉/页脚在编辑区上、下方的条带内用独立的片段编辑器（[`DocChromeEditor`](src/components/DocChromeEditor.tsx)）编辑，写回同一字段；导入 JSON 时通过 `importTick` 同步片段内容，避免与正文编辑抢光标。
 - `docx2tiptap` 可能把 `footnote` / `endnote` 放在 `paragraph.content` 内（非标准 PM 结构）。导入时会自动 **提升** 为与段落并列的块，以便编辑器合法加载；若需像素级与 JSON 一致，请以 CLI 原始文件为准。
 
 ## 论文向排版（与格知达 demo 对齐的能力）
 
 - **样式表**：[src/editor-thesis.scss](src/editor-thesis.scss) — A4 纸宽 794px 容器、小四正文、中英标题字体、`宋体/黑体/仿宋/楷体` 等 `font-family` 映射。
-- **扩展**：`CustomParagraph`（`class`、`data-toc-placeholder`）、`ParagraphStyle`（`textIndent`、`marginTop`、`marginBottom`、`lineHeight`）、`BlockIndent`（块级 `margin-inline-start`，命令 `increaseBlockIndent` / `decreaseBlockIndent`）；`TextStyle` + `Color`、`FontFamily`、`FontSize`、`Highlight`（多色）。
+- **扩展**：`CustomParagraph`（`class`、`data-toc-placeholder`）、`CustomHeading` 与 [`docx-block-attrs.ts`](src/extensions/docx-block-attrs.ts) 中的块级样式（`firstLineIndent`、`lineHeight`、`marginTop`、`marginBottom`）；`BlockIndent`（块级 `margin-inline-start`，命令 `increaseBlockIndent` / `decreaseBlockIndent`）；`TextStyleKit`（`Color`、`FontFamily`、`FontSize`）与 `Highlight`（多色）。
 - **工具栏**：[src/components/FormatToolbar.tsx](src/components/FormatToolbar.tsx) — 字体/字号/文字色/高亮/缩进、段前段后与行距、原有粗斜体下划线、标题、列表、对齐、链接等。
 
 ## 构建静态资源

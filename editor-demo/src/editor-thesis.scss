@@ -50,6 +50,11 @@
   border-radius: 0 0 0.5rem 0.5rem;
 }
 
+.doc-chrome-band .doc-chrome-inner {
+  outline: none;
+  min-height: 1.25rem;
+}
+
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   border-top: none;
   border-radius: 0;

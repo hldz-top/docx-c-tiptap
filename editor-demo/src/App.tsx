@@ -2,10 +2,9 @@ import type { JSONContent } from '@tiptap/core'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useCallback, useEffect, useState } from 'react'
 
+import { DocChromeEditor } from '@/components/DocChromeEditor'
 import { FormatToolbar } from '@/components/FormatToolbar'
 import { buildExtensions } from '@/extensions/editor-extensions'
-import { applyPageTemplate } from '@/utils/page-template'
-import { sanitizeDocChromeHtml } from '@/utils/sanitize-doc-html'
 import { liftBlockNotesFromInlines } from '@/utils/sanitize-docx-json'
 
 const emptyDoc: JSONContent = {
@@ -15,8 +14,6 @@ const emptyDoc: JSONContent = {
     pageSetup: null,
     header: null,
     footer: null,
-    headerHtml: null,
-    footerHtml: null,
   },
   content: [{ type: 'paragraph' }],
 }
@@ -30,8 +27,6 @@ function readWarnings(doc: JSONContent): string[] {
 export default function App() {
   const [warnings, setWarnings] = useState<string[]>([])
   const [importTick, setImportTick] = useState(0)
-  const [localHeader, setLocalHeader] = useState('')
-  const [localFooter, setLocalFooter] = useState('')
 
   const editor = useEditor({
     extensions: buildExtensions(),
@@ -52,25 +47,6 @@ export default function App() {
       editor.off('update', upd)
     }
   }, [editor])
-
-  useEffect(() => {
-    if (!editor) return
-    const h = editor.state.doc.attrs.headerHtml
-    const f = editor.state.doc.attrs.footerHtml
-    setLocalHeader(typeof h === 'string' ? h : '')
-    setLocalFooter(typeof f === 'string' ? f : '')
-  }, [editor, importTick])
-
-  useEffect(() => {
-    if (!editor) return
-    const t = window.setTimeout(() => {
-      editor.commands.updateAttributes('doc', {
-        headerHtml: localHeader.trim() ? localHeader : null,
-        footerHtml: localFooter.trim() ? localFooter : null,
-      })
-    }, 400)
-    return () => window.clearTimeout(t)
-  }, [localHeader, localFooter, editor])
 
   const onImportJson = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,11 +95,6 @@ export default function App() {
     return <div className="p-6 text-zinc-600">正在初始化编辑器…</div>
   }
 
-  const headerRendered = sanitizeDocChromeHtml(applyPageTemplate(localHeader))
-  const footerRendered = sanitizeDocChromeHtml(applyPageTemplate(localFooter))
-  const showHeader = localHeader.trim().length > 0
-  const showFooter = localFooter.trim().length > 0
-
   return (
     <div className="min-h-screen bg-zinc-100 text-zinc-900">
       <header className="border-b border-zinc-200 bg-white px-4 py-3 shadow-sm">
@@ -147,26 +118,11 @@ export default function App() {
 
           <div className="rounded-lg border border-zinc-200 bg-white p-3 text-sm shadow-sm">
             <h2 className="mb-2 font-medium text-zinc-800">页眉 / 页脚</h2>
-            <p className="mb-2 text-xs text-zinc-500">
-              支持简易 HTML（经 DOMPurify 过滤）。可用占位符 <code className="rounded bg-zinc-100 px-0.5">{'{page}'}</code>、
-              <code className="rounded bg-zinc-100 px-0.5">{'{total}'}</code>（当前固定为 1）。
+            <p className="text-xs text-zinc-500">
+              与正文相同：在编辑区上方、下方的条带内直接编辑，内容保存在{' '}
+              <code className="rounded bg-zinc-100 px-0.5">doc.attrs.header</code> /{' '}
+              <code className="rounded bg-zinc-100 px-0.5">footer</code>（Tiptap JSON 块数组），与 docx2tiptap 输出一致。
             </p>
-            <label className="block text-xs font-medium text-zinc-600">页眉 HTML</label>
-            <textarea
-              className="mt-1 w-full rounded border border-zinc-200 p-2 font-mono text-xs"
-              rows={4}
-              value={localHeader}
-              onChange={(e) => setLocalHeader(e.target.value)}
-              spellCheck={false}
-            />
-            <label className="mt-2 block text-xs font-medium text-zinc-600">页脚 HTML</label>
-            <textarea
-              className="mt-1 w-full rounded border border-zinc-200 p-2 font-mono text-xs"
-              rows={4}
-              value={localFooter}
-              onChange={(e) => setLocalFooter(e.target.value)}
-              spellCheck={false}
-            />
           </div>
 
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm">
@@ -186,25 +142,23 @@ export default function App() {
         <main className="min-w-0 flex-1 space-y-3">
           <FormatToolbar editor={editor} run={run} setLink={setLink} />
           <div className="simple-editor-wrapper rounded-lg bg-zinc-50/80 p-2 shadow-inner">
-            {showHeader ? (
-              <div
-                className="doc-chrome-band header-band"
-                dangerouslySetInnerHTML={{ __html: headerRendered }}
-              />
-            ) : null}
-            <div
-              className={
-                showHeader || showFooter ? 'simple-editor-content' : 'simple-editor-content is-single-chrome'
-              }
-            >
+            <DocChromeEditor
+              mainEditor={editor}
+              docAttr="header"
+              importTick={importTick}
+              className="doc-chrome-band header-band"
+              placeholder="页眉…"
+            />
+            <div className="simple-editor-content">
               <EditorContent editor={editor} />
             </div>
-            {showFooter ? (
-              <div
-                className="doc-chrome-band footer-band"
-                dangerouslySetInnerHTML={{ __html: footerRendered }}
-              />
-            ) : null}
+            <DocChromeEditor
+              mainEditor={editor}
+              docAttr="footer"
+              importTick={importTick}
+              className="doc-chrome-band footer-band"
+              placeholder="页脚…"
+            />
           </div>
         </main>
       </div>
