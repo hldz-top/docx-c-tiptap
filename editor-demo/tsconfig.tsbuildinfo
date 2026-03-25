@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/extensions/doc-with-meta.ts","./src/extensions/editor-extensions.ts","./src/extensions/image-layout.ts","./src/extensions/thesis-nodes.ts","./src/utils/sanitize-docx-json.ts"],"errors":true,"version":"5.9.3"}

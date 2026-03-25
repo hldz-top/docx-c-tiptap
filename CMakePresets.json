@@ -1,0 +1,77 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
+      "name": "windows-vcpkg-x64",
+      "inherits": "base",
+      "displayName": "Windows x64 + vcpkg (libxml2)",
+      "description": "需要环境变量 VCPKG_ROOT。仅安装 Build Tools 时，请用 scripts/configure-windows.ps1（会为本次配置传入 CMAKE_GENERATOR_INSTANCE）。",
+      "generator": "Visual Studio 18 2026",
+      "architecture": {
+        "value": "x64",
+        "strategy": "set"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": "linux",
+      "inherits": "base",
+      "displayName": "Linux (系统 libxml2)",
+      "generator": "Unix Makefiles",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-release",
+      "displayName": "Release",
+      "configurePreset": "windows-vcpkg-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Release",
+      "configurePreset": "linux",
+      "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-test",
+      "configurePreset": "windows-vcpkg-x64",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "linux-test",
+      "configurePreset": "linux",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}

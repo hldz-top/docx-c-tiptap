@@ -1,0 +1,178 @@
+/* 论文向排版：与 gezida editor.scss 对齐的核心规则 */
+
+.simple-editor-wrapper {
+  max-width: 794px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.simple-editor-content {
+  max-width: 794px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  min-height: 360px;
+  padding: 3rem 3rem 10vh;
+  outline: none;
+  border: 1px solid #e4e4e7;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.doc-chrome-band {
+  max-width: 794px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 10.5pt;
+  color: #3f3f46;
+  border: 1px solid #e4e4e7;
+  background: #fafafa;
+  padding: 0.5rem 1.5rem;
+  min-height: 2rem;
+}
+
+.doc-chrome-band.header-band {
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.doc-chrome-band.footer-band {
+  border-top: none;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  border-top: none;
+  border-radius: 0;
+  border-bottom: none;
+}
+
+.simple-editor-content.is-single-chrome .tiptap.ProseMirror.simple-editor {
+  border-radius: 0.5rem;
+  border: 1px solid #e4e4e7;
+}
+
+/* 默认字号：小四；英文 Times New Roman */
+.tiptap.ProseMirror.simple-editor {
+  font-family:
+    'Times New Roman',
+    'SimSun',
+    '宋体',
+    'Songti SC',
+    serif;
+  font-size: 12pt;
+
+  p {
+    font-family:
+      'Times New Roman',
+      'SimSun',
+      '宋体',
+      'Songti SC',
+      serif;
+    font-size: 12pt;
+  }
+
+  h1 {
+    font-family:
+      'Times New Roman',
+      'SimHei',
+      '黑体',
+      'Heiti SC',
+      sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  h2 {
+    font-family:
+      'Times New Roman',
+      'SimHei',
+      '黑体',
+      'Heiti SC',
+      sans-serif;
+    font-size: 14pt;
+    font-weight: 700;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family:
+      'Times New Roman',
+      'SimHei',
+      '黑体',
+      'Heiti SC',
+      sans-serif;
+    font-size: 12pt;
+    font-weight: 700;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+}
+
+.tiptap.ProseMirror [style*='font-family: 宋体'] {
+  font-family:
+    'SimSun',
+    '宋体',
+    'Songti SC',
+    'Songti TC',
+    'Noto Serif CJK SC',
+    'Noto Serif CJK' !important;
+}
+
+.tiptap.ProseMirror [style*='font-family: 黑体'] {
+  font-family:
+    'SimHei',
+    '黑体',
+    'Heiti SC',
+    'Microsoft YaHei',
+    'PingFang SC',
+    'Noto Sans CJK SC' !important;
+}
+
+.tiptap.ProseMirror [style*='font-family: 仿宋'] {
+  font-family:
+    'FangSong',
+    '仿宋',
+    'STFangsong',
+    'FZFS',
+    'Noto Serif CJK SC' !important;
+}
+
+.tiptap.ProseMirror [style*='font-family: 楷体'] {
+  font-family:
+    'KaiTi',
+    '楷体',
+    'STKaiti',
+    'Kaiti SC',
+    'BiauKai',
+    'DFKai-SB',
+    'Noto Serif CJK SC' !important;
+}
+
+.tiptap.ProseMirror.simple-editor > ul,
+.tiptap.ProseMirror.simple-editor > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media screen and (max-width: 480px) {
+  .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    padding: 1rem 1.5rem 30vh;
+  }
+}

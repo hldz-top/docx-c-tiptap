@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+/* 与 docx2tiptap 输出对应的可读样式 */
+.tiptap table.docx-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+}
+.tiptap table.docx-table td,
+.tiptap table.docx-table th {
+  border: 1px solid #d4d4d8;
+  padding: 0.35rem 0.5rem;
+  vertical-align: top;
+}
+.tiptap img.docx-image {
+  max-width: 100%;
+  height: auto;
+}
+.tiptap figure.docx-figure {
+  margin: 1rem 0;
+}
+.tiptap .abstract-block,
+.tiptap .keywords-block,
+.tiptap .reference-item {
+  margin: 0.5rem 0;
+}
+.tiptap aside.docx-footnote,
+.tiptap aside.docx-endnote {
+  margin: 0.5rem 0;
+  padding: 0.35rem 0.5rem;
+  border-left: 3px solid #a1a1aa;
+  font-size: 0.9em;
+  color: #52525b;
+}
